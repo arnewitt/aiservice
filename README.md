@@ -2,7 +2,7 @@
 
 ## Overview
 
-The AI Services API is a fast and flexible module designed to provide various AI services through a RESTful API.
+The AI Services API is a fast and flexible module designed to provide various AI services through a RESTful API. Thanks to @ChatGPT for writing my test cases 🤗
 
 ## Features
 
