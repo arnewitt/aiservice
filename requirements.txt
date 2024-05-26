@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+pydantic
+openai-whisper
+aiofiles
+pytest
+httpx
+numpy
+ffmpeg
