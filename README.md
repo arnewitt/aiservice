@@ -22,40 +22,48 @@ The AI Services API is a fast and flexible module designed to provide various AI
 
 ### Installation
 
-1. **Clone the repository**
+1. **Clone the repository:**
+
     ```bash
     git clone https://github.com/arnewitt/aiservice
+
     cd ai-services-api
     ```
 
-2. **Install dependencies**
+2. **Install dependencies:**
+
     Create and activate a virtual environment (optional but recommended):
 
     ```bash
     python -m venv venv
-    source venv/bin/activate  
-    # On Windows, use `venv\Scripts\activate` instead
+
+    source venv/bin/activate  # On Windows, use `venv\Scripts\activate` instead
     ```
 
 3. **Install the required packages:**
+
     ```bash
     pip install -r requirements.txt
     ```
 
-4. **Running the Server**
+4. **Running the Server:**
+
     Using Python directly
 
     ```bash
     python server.py --host 0.0.0.0 --port 8000 --model-size large
     ````
 
-5. **Using Docker**
+5. **Using Docker:**
+
     Build the Docker image:
 
     ```bash
     docker build -t whisper-transcription-server .
     ```
+
     Run the Docker container:
+
     ```bash
     docker run -p 8000:8000 whisper-transcription-server
     ```
