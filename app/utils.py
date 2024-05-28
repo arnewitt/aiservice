@@ -4,7 +4,7 @@ import logging
 import asyncio
 from fastapi.responses import JSONResponse
 from fastapi import UploadFile, HTTPException
-from app.models import WhisperTranscriber
+from app.models import WhisperTranscriber, OllamaChatModel
 
 # Setup logging
 logger = logging.getLogger(__name__)
@@ -57,3 +57,21 @@ async def transcribe_async(transcriber: WhisperTranscriber, file_path: str) -> s
     loop = asyncio.get_running_loop()
     transcript_text = await loop.run_in_executor(None, transcriber.transcribe, file_path)
     return transcript_text
+
+
+async def chat_response_async(model: OllamaChatModel, prompt: str) -> str:
+    """
+    Perform chat response asynchronously to avoid blocking the event loop.
+
+    Parameters:
+    - model (OllamaChatModel): An instance of OllamaChatModel to perform the chat response.
+    - prompt (str): The prompt to send to the chat model.
+
+    Returns:
+    - str: The chat response.
+    """
+    # Run the chat response in a separate thread to avoid blocking the event loop
+    loop = asyncio.get_running_loop()
+    response = await loop.run_in_executor(None, model.chat, prompt)
+    return response
+

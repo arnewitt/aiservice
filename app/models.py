@@ -2,6 +2,7 @@ import whisper
 import torch
 import logging
 import ssl
+from langchain_community.llms import Ollama
 
 # Setup logging
 logging.basicConfig(level=logging.INFO)
@@ -52,3 +53,34 @@ class WhisperTranscriber:
         except Exception as e:
             logger.error(f"Transcription failed: {str(e)}")
             raise RuntimeError(f"Transcription failed: {str(e)}")
+
+
+class OllamaChatModel:
+    """
+    A class to handle OllamaChat model.
+
+    Attributes:
+    - model_name (str): The name of the model. Must be listed on https://ollama.com/library 
+    """
+
+    def __init__(self, model_name: str):
+        """
+        Initialize the OllamaChatModel with the specified model path.
+
+        Parameters:
+        - model_name (str): The name of the model.
+        """
+        self.model_name = model_name
+
+    def chat(self, prompt: str) -> str:
+        """
+        Generate a response to the given prompt.
+
+        Parameters:
+        - prompt (str): The prompt to generate a response for.
+
+        Returns:
+        - str: The generated response.
+        """
+        llm = Ollama(model=self.model_name, base_url="http://ollama:11434")
+        return llm.invoke(prompt)

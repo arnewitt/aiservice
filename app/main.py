@@ -1,6 +1,6 @@
 from configparser import ConfigParser
 from fastapi import FastAPI
-from app.models import WhisperTranscriber
+from app.models import WhisperTranscriber, OllamaChatModel
 from app.routes import router
 
 def create_app(config: ConfigParser) -> FastAPI:
@@ -17,6 +17,10 @@ def create_app(config: ConfigParser) -> FastAPI:
     # Include transcription service
     whisper_size = config['WhisperSize']
     app.dependency_overrides[WhisperTranscriber] = lambda: WhisperTranscriber(whisper_size)
+    
+    # Include ollama chat model
+    ollama_model = config['OllamaModel']
+    app.dependency_overrides[OllamaChatModel] = lambda: OllamaChatModel(ollama_model)
 
     # Add routes to service
     app.include_router(router)

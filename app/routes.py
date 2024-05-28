@@ -1,6 +1,6 @@
 from fastapi import APIRouter, UploadFile, File, Depends, status
 from pydantic import BaseModel
-from app.models import WhisperTranscriber
+from app.models import WhisperTranscriber, OllamaChatModel
 from app.utils import handle_transcription
 
 router = APIRouter()
@@ -18,6 +18,23 @@ async def transcribe_audio(file: UploadFile = File(...), transcriber: WhisperTra
     - JSONResponse: A JSON response containing the transcript text.
     """
     return await handle_transcription(file, transcriber)
+
+class TextItem(BaseModel):
+    text: str
+
+@router.post("/chat_response")
+async def chat_model_response(prompt: TextItem, model: OllamaChatModel = Depends()):
+    """
+    Endpoint to generate a response from the OllamaChatModel.
+
+    Parameters:
+    - prompt (TextItem): The prompt to generate a response for.
+    - model (OllamaChatModel): The OllamaChatModel to use for generating the response.
+
+    Returns:
+    - JSONResponse: A JSON response containing the generated response.
+    """
+    return model.chat(prompt.text)
 
 class HealthCheck(BaseModel):
     """Response model to validate and return when performing a health check."""

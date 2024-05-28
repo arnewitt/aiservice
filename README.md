@@ -91,6 +91,28 @@ The AI Services API is a fast and flexible module designed to provide various AI
     ```
 - Warning: We disable SSL verification in `app/models.py` during the initial model downloading process, creating a security risk. Consider properly installing SSL certificats. 
 
+#### 2. Chat with an llm
+- Endpoint post /chat_response
+- Description: Get response from an llm to a prompt.
+- Request:
+  - JSON Object: `{"text": "<prompt>"}`
+- Response: 
+  - 200 OK: A JSON Object with the llm's response.
+  - 500 Internal Server Error: An error message if no message can be generated.
+- Example:
+  ````bash
+  curl --header "Content-Type: application/json" \ 
+  --request POST \
+  --data '{"text": "hello, world"}' \           
+  http://localhost:8000/chat_response
+  ```
+- Response:
+    `"Hello! 👋 It's great to hear from you. What can I do for you today? 😊"`
+- Tip: make sure you download a model on the ollama instance:
+  ```bash
+  docker exec -it ollama ollama run gemma:2b
+  ```
+
 ### Testing
 To run the test suite, use pytest:
 

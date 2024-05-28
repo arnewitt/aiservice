@@ -9,3 +9,4 @@ numpy
 ffmpeg
 pytest-asyncio
 asynctest
+langchain_community
