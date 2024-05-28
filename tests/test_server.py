@@ -1,9 +1,13 @@
 import pytest
 from fastapi.testclient import TestClient
 from app.main import create_app
+from configparser import ConfigParser
 
 # Initialize the FastAPI app
-app = create_app(model_size="small")
+config = ConfigParser()
+config.read('config.ini')
+
+app = create_app(config=config['test'])
 client = TestClient(app)
 
 def test_transcribe_audio():
