@@ -5,10 +5,20 @@ from langchain_community.document_loaders import TextLoader
 from langchain_community.embeddings.sentence_transformer import SentenceTransformerEmbeddings
 from langchain_text_splitters import CharacterTextSplitter
 from app.database import ChromaDBHandler
+from configparser import ConfigParser
+
+config = ConfigParser()
+config.read('config.ini')
+config = config['test']
 
 @pytest.fixture
 def handler():
-    return ChromaDBHandler()
+    return ChromaDBHandler(
+        model_name=config['EmbeddingModelName'],
+        persist_directory=config['ChromaDBPersistDir'],
+        chunk_size=config['DocumentChunkSize'],
+        chunk_overlap=config['DocumentChunkOverlap']
+    )
 
 @patch("os.path.exists", return_value=True)
 @patch.object(ChromaDBHandler, "load_from_disk")
