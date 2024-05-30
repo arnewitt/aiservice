@@ -1,6 +1,7 @@
 from configparser import ConfigParser
 from fastapi import FastAPI
 from app.models import WhisperTranscriber, OllamaChatModel
+from app.database import ChromaDBHandler
 from app.routes import router
 
 def create_app(config: ConfigParser) -> FastAPI:
@@ -21,6 +22,11 @@ def create_app(config: ConfigParser) -> FastAPI:
     # Include ollama chat model
     ollama_model = config['OllamaModel']
     app.dependency_overrides[OllamaChatModel] = lambda: OllamaChatModel(ollama_model)
+
+    # Include database handler
+    db = ChromaDBHandler()
+    db.load_from_disk()
+    app.dependency_overrides[ChromaDBHandler] = lambda: db
 
     # Add routes to service
     app.include_router(router)

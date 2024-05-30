@@ -63,13 +63,14 @@ class OllamaChatModel:
     - model_name (str): The name of the model. Must be listed on https://ollama.com/library 
     """
 
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, base_url: str = "http://ollama:11434"):
         """
         Initialize the OllamaChatModel with the specified model path.
 
         Parameters:
         - model_name (str): The name of the model.
         """
+        self.base_url = base_url
         self.model_name = model_name
 
     def chat(self, prompt: str) -> str:
@@ -82,5 +83,5 @@ class OllamaChatModel:
         Returns:
         - str: The generated response.
         """
-        llm = Ollama(model=self.model_name, base_url="http://ollama:11434")
+        llm = Ollama(model=self.model_name, base_url=self.base_url)
         return llm.invoke(prompt)

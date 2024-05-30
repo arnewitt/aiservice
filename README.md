@@ -86,7 +86,7 @@ The AI Services API is a fast and flexible module designed to provide various AI
 - Response:
     ```json
     {
-    "transcript": "Transcribed text from the audio file."
+      "transcript": "Transcribed text from the audio file."
     }
     ```
 - Warning: We disable SSL verification in `app/models.py` during the initial model downloading process, creating a security risk. Consider properly installing SSL certificats. 
