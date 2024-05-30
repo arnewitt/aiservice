@@ -24,7 +24,12 @@ def create_app(config: ConfigParser) -> FastAPI:
     app.dependency_overrides[OllamaChatModel] = lambda: OllamaChatModel(ollama_model)
 
     # Include database handler
-    db = ChromaDBHandler()
+    db = ChromaDBHandler(
+        model_name=config['EmbeddingModelName'],
+        persist_directory=config['ChromaDBPersistDir'],
+        chunk_size=config['DocumentChunkSize'],
+        chunk_overlap=config['DocumentChunkOverlap']
+    )
     db.load_from_disk()
     app.dependency_overrides[ChromaDBHandler] = lambda: db
 

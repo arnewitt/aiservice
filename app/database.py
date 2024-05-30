@@ -14,7 +14,7 @@ class ChromaDBHandler:
     - chunk_overlap (int): The number of characters to overlap between chunks.
     - persist_directory (str): The directory to persist the database to.
     """
-    def __init__(self, model_name="all-MiniLM-L6-v2", chunk_size=60, chunk_overlap=0, persist_directory="./chroma_db"):
+    def __init__(self, model_name, persist_directory, chunk_size, chunk_overlap):
         self.persist_directory = persist_directory
         self.embedding_function = SentenceTransformerEmbeddings(model_name=model_name)
         self.text_splitter = CharacterTextSplitter(separator='\n', chunk_size=chunk_size, chunk_overlap=chunk_overlap)
