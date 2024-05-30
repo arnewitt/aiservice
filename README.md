@@ -8,6 +8,8 @@ The AI Services API is a fast and flexible module designed to provide various AI
 
 - **Demo AI-service:**
   - Speech-to-Text: Convert audio files to text using the [OpenAI Whisper model](https://github.com/openai/whisper).
+  - Chat: Chat with a local LLM, e.g., [gemma:2b](https://huggingface.co/google/gemma-2b).
+  - Semantic Similarity Search: Search for knowledge in a database.
 - **Modular Architecture**: Easily add new AI services.
 - **Scalable**: Deployable with Docker for scalable and consistent environments.
 - **FastAPI Framework**: Built with FastAPI for high performance and automatic interactive API documentation.
@@ -18,7 +20,7 @@ The AI Services API is a fast and flexible module designed to provide various AI
 
 - Python 3.11+ with dependencies
 - FFmpeg (required for audio processing)
-- Docker (optional, but preferred with containerized deployment)
+- Docker (optional, but preferred for containerized deployment)
 
 ### Installation
 
@@ -26,7 +28,6 @@ The AI Services API is a fast and flexible module designed to provide various AI
 
     ```bash
     git clone https://github.com/arnewitt/aiservice
-
     cd ai-services-api
     ```
 
@@ -36,7 +37,6 @@ The AI Services API is a fast and flexible module designed to provide various AI
 
     ```bash
     python -m venv venv
-
     source venv/bin/activate  # On Windows, use `venv\Scripts\activate` instead
     ```
 
@@ -48,11 +48,11 @@ The AI Services API is a fast and flexible module designed to provide various AI
 
 4. **Running the Server:**
 
-    Using Python directly
+    Using Python directly:
 
     ```bash
     python server.py --host 0.0.0.0 --port 8000 --model-size large
-    ````
+    ```
 
 5. **Using Docker:**
 
@@ -69,51 +69,98 @@ The AI Services API is a fast and flexible module designed to provide various AI
     ```
 
 ### API Usage
+
 #### 1. Demo Speech-to-Text
-- Endpoint: POST /transcribe
-- Description: Transcribe an audio file to text.
+
+- **Endpoint:** POST /transcribe
+- **Description:** Transcribe an audio file to text.
   - As per [OpenAI Whisper Documentation](https://help.openai.com/en/articles/7031512-whisper-audio-api-faq), supported file formats are: m4a, mp3, webm, mp4, mpga, wav, mpeg
-- Request:
-  - File: An audio file to be transcribed (e.g., .wav, .mp3, .m4a).
-- Response:
-  - 200 OK: A JSON object containing the transcript‚.
-  - 500 Internal Server Error: An error message if the transcription fails.
-  - 422 Unprocessable Entity: If no file is provided or the file format is invalid.
-- Example:
+- **Request:**
+  - **File:** An audio file to be transcribed (e.g., .wav, .mp3, .m4a).
+- **Response:**
+  - **200 OK:** A JSON object containing the transcript.
+  - **500 Internal Server Error:** An error message if the transcription fails.
+  - **422 Unprocessable Entity:** If no file is provided or the file format is invalid.
+- **Example:**
+
     ```bash
     curl -X POST "http://localhost:8000/transcribe" -F "file=@path/to/your/audiofile.m4a"
     ```
-- Response:
+
+- **Response:**
+
     ```json
     {
       "transcript": "Transcribed text from the audio file."
     }
     ```
-- Warning: We disable SSL verification in `app/models.py` during the initial model downloading process, creating a security risk. Consider properly installing SSL certificats. 
 
-#### 2. Chat with an llm
-- Endpoint post /chat_response
-- Description: Get response from an llm to a prompt.
-- Request:
-  - JSON Object: `{"text": "<prompt>"}`
-- Response: 
-  - 200 OK: A JSON Object with the llm's response.
-  - 500 Internal Server Error: An error message if no message can be generated.
-- Example:
-  ````bash
-  curl --header "Content-Type: application/json" \ 
-  --request POST \
-  --data '{"text": "hello, world"}' \           
-  http://localhost:8000/chat_response
-  ```
-- Response:
-    `"Hello! 👋 It's great to hear from you. What can I do for you today? 😊"`
-- Tip: make sure you download a model on the ollama instance:
-  ```bash
-  docker exec -it ollama ollama run gemma:2b
-  ```
+- **Warning:** We disable SSL verification in `app/models.py` during the initial model downloading process, creating a security risk. Consider properly installing SSL certificates.
+
+#### 2. Chat with an LLM
+
+- **Endpoint:** POST /chat_response
+- **Description:** Get a response from an LLM to a prompt.
+- **Request:**
+  - **JSON Object:** `{"text": "<prompt>"}`
+- **Response:**
+  - **200 OK:** A JSON object with the LLM's response.
+  - **500 Internal Server Error:** An error message if no message can be generated.
+- **Example:**
+
+    ```bash
+    curl --header "Content-Type: application/json" \
+    --request POST \
+    --data '{"text": "hello, world"}' \
+    http://localhost:8000/chat_response
+    ```
+
+- **Response:**
+
+    ```json
+    {
+      "response": "Hello! 👋 It's great to hear from you. What can I do for you today? 😊"
+    }
+    ```
+
+- **Tip:** Make sure you download a model on the Ollama instance:
+
+    ```bash
+    docker exec -it ollama ollama run gemma:2b
+    ```
+
+#### 3. Get K Nearest Documents from Database Based on Semantic Similarity Search
+
+- **Endpoint:** POST /similarity
+- **Description:** Retrieve the k most similar documents to a sentence from the database behind this service.
+- **Request:** `{"text": "<prompt>", "k": 3}`
+- **Response:**
+  - **200 OK:** A JSON object with the top k most similar documents.
+  - **500 Internal Server Error:** An error message if no response can be generated.
+- **Example:**
+
+    ```bash
+    curl --header "Content-Type: application/json" \
+    --request POST \
+    --data '{"text": "What is a group of long-legged, pink birds called?", "k": 1}' \
+    http://localhost:8000/similarity
+    ```
+
+- **Response:**
+
+    ```json
+    {
+      "documents": [
+          {
+              "content": "A group of flamingos is called a \"flamboyance.\"",
+              "top_k": 0
+          }
+      ]
+    }
+    ```
 
 ### Testing
+
 To run the test suite, use pytest:
 
 ```bash

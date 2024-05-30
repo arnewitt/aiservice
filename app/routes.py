@@ -52,7 +52,8 @@ async def chat_model_response(prompt: ChatItem, model: OllamaChatModel = Depends
     Returns:
     - JSONResponse: A JSON response containing the generated response.
     """
-    return model.chat(prompt.text)
+    response = model.chat(prompt.text)
+    return {"response": response}
 
 @router.post(
     "/similarity",
